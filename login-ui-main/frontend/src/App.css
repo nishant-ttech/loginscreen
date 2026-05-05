@@ -1,0 +1,5 @@
+/* App-level reset / fallback */
+.App {
+  min-height: 100vh;
+  background: transparent;
+}

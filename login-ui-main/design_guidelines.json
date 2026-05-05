@@ -1,0 +1,51 @@
+{
+  "project_name": "Premium Fintech Auth Page",
+  "theme": "Dark",
+  "archetype": "Archetype 5: Jewel & Luxury (Premium Fintech)",
+  "instructions_to_main_agent": [
+    "Install required dependencies: yarn add framer-motion three @react-three/fiber @react-three/drei lucide-react react-icons",
+    "Add Google Fonts to public/index.html or load them in CSS: https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap",
+    "Build a single-page split-screen authentication layout (grid-cols-1 md:grid-cols-2, 100vh). Set background to a deep green/black gradient.",
+    "Left Side (3D Card): Implement a 3D payment card using @react-three/fiber and @react-three/drei. It must feature mouse parallax tilt, slow floating animation, soft ambient + directional light with reflection. Display dynamic card number, holder name, and expiry date. Make it look like a premium dark green/black metallic or glass card. Add a generic 'VISA' style text/logo using SVG or bold italic text on the card.",
+    "Right Side (Auth Form): Create a glassmorphism container (bg-white/5, backdrop-blur-xl, border-white/10) with generous padding (p-8 or p-12).",
+    "Partition Animation (MAIN FEATURE): Do not use a simple conditional render for Signin/Signup. Build a component that splits the form area into a grid of 24-32 chunks. On toggle, use framer-motion to animate these chunks slightly outward (10-25px), rotate max 2 degrees, and scale down to 0.97. Swap the content at the midpoint, then reassemble them with a spring snap. Use a stagger of 0.01-0.03s, total duration 500-700ms.",
+    "Form Elements: Inputs must be glassmorphism (bg-white/5, text-white) with smooth emerald green focus glow (ring-[#10b981]/50). Primary buttons must use a green gradient with hover scale+glow. Add password strength meter on the signup form.",
+    "Extras: Include Google/Apple social login buttons (use react-icons, flat glass style), 'Remember me' checkbox, and 'Forgot password' link.",
+    "Data Test IDs: All interactive elements MUST include a data-testid attribute in kebab-case format (e.g., data-testid='login-submit-button').",
+    "Do NOT use external placeholder images. Build logos/icons using SVG or react-icons."
+  ],
+  "colors": {
+    "primary": "#10b981",
+    "background_gradient": "bg-gradient-to-br from-[#020a07] to-[#041a10]",
+    "glass_surface": "bg-white/5",
+    "glass_border": "border-white/10",
+    "input_bg": "bg-white/5",
+    "text_main": "text-white",
+    "text_muted": "text-gray-400"
+  },
+  "typography": {
+    "heading_font": "font-sans (Outfit)",
+    "body_font": "font-sans (Manrope)"
+  },
+  "layout": {
+    "structure": "100vh flex or grid layout, mobile stacked, desktop split-screen",
+    "form_container": "rounded-3xl shadow-2xl p-8 md:p-12 relative overflow-hidden"
+  },
+  "animations": {
+    "partition": {
+      "chunks": 30,
+      "outward_movement": "10-25px",
+      "rotation": "2deg",
+      "scale": "0.97 to 1",
+      "duration": "500-700ms",
+      "stagger": "0.01-0.03s"
+    }
+  },
+  "component_path": {
+    "main": "/app/frontend/src/App.js",
+    "auth_container": "/app/frontend/src/components/AuthContainer.js",
+    "card_3d": "/app/frontend/src/components/PaymentCard3D.js",
+    "partition_animator": "/app/frontend/src/components/PartitionAnimator.js"
+  },
+  "image_urls": []
+}
