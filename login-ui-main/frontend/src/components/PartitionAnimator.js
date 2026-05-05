@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * PartitionAnimator
- * - Measures height of active child and locks container during transitions.
- * - On key change, plays a partition-chunk overlay: 6x5 grid (30 chunks) that
- *   moves outward slightly, then snaps back (spring).
- * - Old content fades/blurs out, new content fades/blurs in at midpoint.
+ * - Always renders the LATEST child so controlled inputs inside stay in sync
+ *   with parent state (typing, autofill, deletion all flow through normally).
+ * - When `activeKey` changes, plays a partition-chunk overlay (6x5 grid) and
+ *   swaps the underlying content via AnimatePresence keyed on activeKey.
+ * - Tracks size via ResizeObserver so dynamic content (e.g. multi-step
+ *   wizard) grows/shrinks the glass card cleanly.
  */
 const COLS = 6;
 const ROWS = 5;
@@ -14,65 +16,58 @@ const TOTAL = COLS * ROWS;
 
 export default function PartitionAnimator({ children, activeKey }) {
   const child = React.Children.only(children);
-  const wrapRef = useRef(null);
   const measureRef = useRef(null);
   const [height, setHeight] = useState("auto");
   const [shattering, setShattering] = useState(false);
-  const [displayed, setDisplayed] = useState(child);
   const prevKey = useRef(activeKey);
 
-  // Update displayed content after first paint
   useEffect(() => {
     if (activeKey === prevKey.current) return;
-    // Start animation sequence
     setShattering(true);
-    // Swap content at midpoint (~320ms into ~640ms total)
-    const swapT = setTimeout(() => setDisplayed(child), 320);
     const doneT = setTimeout(() => {
       setShattering(false);
       prevKey.current = activeKey;
     }, 720);
-    return () => {
-      clearTimeout(swapT);
-      clearTimeout(doneT);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => clearTimeout(doneT);
   }, [activeKey]);
 
-  // Measure content height so layout is locked and chunks can overlay
   useLayoutEffect(() => {
     if (!measureRef.current) return;
     const h = measureRef.current.offsetHeight;
     if (h > 0) setHeight(h);
-  }, [displayed]);
+  }, [activeKey]);
 
-  // Build grid chunks
+  useEffect(() => {
+    const el = measureRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      const h = el.offsetHeight;
+      if (h > 0) setHeight(h);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const chunks = Array.from({ length: TOTAL }, (_, i) => {
     const col = i % COLS;
     const row = Math.floor(i / COLS);
-    // Center-relative direction
-    const cx = (col + 0.5) / COLS - 0.5; // -0.5..0.5
+    const cx = (col + 0.5) / COLS - 0.5;
     const cy = (row + 0.5) / ROWS - 0.5;
     const mag = Math.max(0.001, Math.hypot(cx, cy));
-    // Outward px offset between 10 and 22 based on radial distance
     const push = 10 + mag * 22;
     const dx = (cx / mag) * push;
     const dy = (cy / mag) * push;
-    // Small rotation (max ~2deg)
     const rot = (cx + cy) * 2;
-    // Stagger based on radial distance (center goes first)
     const delay = 0.012 * (i % COLS) + 0.018 * Math.floor(i / COLS);
     return { i, col, row, dx, dy, rot, delay };
   });
 
   return (
     <div
-      ref={wrapRef}
       className="relative"
       style={{ height: typeof height === "number" ? height : undefined }}
       data-testid="partition-animator"
     >
-      {/* Actual content (for measurement + display). Invisible while shattering. */}
       <motion.div
         ref={measureRef}
         animate={{
@@ -86,18 +81,17 @@ export default function PartitionAnimator({ children, activeKey }) {
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={displayed.key || "default"}
+            key={activeKey}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.26, ease: [0.2, 0.8, 0.2, 1] }}
           >
-            {displayed}
+            {child}
           </motion.div>
         </AnimatePresence>
       </motion.div>
 
-      {/* Chunk overlay – only during shatter */}
       <AnimatePresence>
         {shattering && (
           <motion.div

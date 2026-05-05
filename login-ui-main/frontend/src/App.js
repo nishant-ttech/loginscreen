@@ -7,15 +7,30 @@ import { Shield, Lock, Sparkles } from "lucide-react";
 function App() {
   const [mode, setMode] = useState("signin"); // "signin" | "signup"
   const [formData, setFormData] = useState({
-    name: "Alex Morgan",
+    // shared
     email: "",
     password: "",
+    // signup
+    firstName: "",
+    lastName: "",
+    country: "United Arab Emirates",
+    gender: "",
+    dob: "",
+    phoneCode: "+971",
+    phone: "",
+    city: "",
+    postalCode: "",
+    street: "",
+    confirmPassword: "",
+    referralCode: "",
+    agreedToTerms: false,
   });
 
   // Derive pseudo card details from input
   const cardDetails = useMemo(() => {
-    const name = formData.name?.trim() || "ALEX MORGAN";
-    const seed = (formData.email || "emergent.pay").toLowerCase();
+    const fullName = `${formData.firstName || ""} ${formData.lastName || ""}`.trim();
+    const name = fullName || "ALEX MORGAN";
+    const seed = (formData.email || "netpay").toLowerCase();
     // simple deterministic card number from email
     let h = 0;
     for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
@@ -26,7 +41,7 @@ function App() {
       number,
       expiry: "12 / 29",
     };
-  }, [formData.name, formData.email]);
+  }, [formData.firstName, formData.lastName, formData.email]);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white" data-testid="auth-page-root">
@@ -34,13 +49,13 @@ function App() {
 
       {/* Top bar */}
       <header className="relative z-20 flex items-center justify-between px-6 py-5 md:px-10">
-        <div className="flex items-center gap-2.5" data-testid="brand-logo">
-          <div className="relative h-8 w-8 rounded-lg glass-strong flex items-center justify-center">
-            <div className="h-2.5 w-2.5 rounded-sm bg-emerald-400 glow-emerald-strong" />
-          </div>
-          <div className="font-display text-lg font-semibold tracking-tight">
-            Verdant<span className="text-emerald-400">·</span>Pay
-          </div>
+        <div className="flex items-center gap-2" data-testid="brand-logo">
+          <img
+            src="/logo.png"
+            alt="NetPay"
+            className="h-10 w-auto select-none drop-shadow-[0_0_18px_rgba(16,185,129,0.35)]"
+            draggable={false}
+          />
         </div>
         <div className="hidden md:flex items-center gap-2 text-xs text-emerald-200/70">
           <Shield className="h-3.5 w-3.5" />

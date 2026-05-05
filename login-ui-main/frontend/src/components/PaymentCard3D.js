@@ -56,7 +56,7 @@ function drawCardFace(ctx, W, H, { number, holder, expiry }) {
     ctx.font = "500 22px Outfit, sans-serif";
     ctx.textBaseline = "top";
     ctx.letterSpacing = "4px";
-    ctx.fillText("VERDANT · PAY", 60, 60);
+    ctx.fillText("NETPAY · GATEWAY", 60, 60);
 
     ctx.fillStyle = "rgba(167, 243, 208, 0.45)";
     ctx.font = "500 16px Outfit, sans-serif";
@@ -74,7 +74,7 @@ function drawCardFace(ctx, W, H, { number, holder, expiry }) {
     ctx.shadowColor = "rgba(16,185,129,0.55)";
     ctx.shadowBlur = 16;
     ctx.textAlign = "right";
-    ctx.fillText("VERDANT", W - 60, 52);
+    ctx.fillText("NETPAY", W - 60, 52);
     ctx.restore();
 
     // Contactless icon (arcs) near chip area
@@ -313,8 +313,8 @@ export default function PaymentCard3D({ number, holder, expiry }) {
       </Canvas>
 
       <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-emerald-100/50 z-10">
-        <span>Live preview</span>
-        <span>Move mouse to tilt</span>
+        {/* <span>Live preview</span> */}
+        {/* <span>Move mouse to tilt</span> */}
       </div>
     </div>
   );
