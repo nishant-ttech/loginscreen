@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
@@ -13,7 +13,7 @@ import {
   Check,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa";
+import { FaFacebook, FaGithub } from "react-icons/fa6";
 import PartitionAnimator from "@/components/PartitionAnimator";
 import PasswordStrength from "@/components/PasswordStrength";
 
@@ -68,7 +68,7 @@ const Input = ({ icon, type = "text", error, rightSlot, ...props }) => (
 
 function SocialRow() {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-3 gap-3">
       <button
         type="button"
         data-testid="social-google-btn"
@@ -79,11 +79,19 @@ function SocialRow() {
       </button>
       <button
         type="button"
-        data-testid="social-apple-btn"
+        data-testid="social-facebook-btn"
         className="flex items-center justify-center gap-2.5 rounded-xl glass py-3 text-sm text-white/85 hover:bg-white/[0.08] hover:border-emerald-400/30 transition-all"
       >
-        <FaApple className="h-[18px] w-[18px] text-white" />
-        <span>Apple</span>
+        <FaFacebook className="h-[18px] w-[18px] text-[#1877f2]" />
+        <span>Facebook</span>
+      </button>
+      <button
+        type="button"
+        data-testid="social-github-btn"
+        className="flex items-center justify-center gap-2.5 rounded-xl glass py-3 text-sm text-white/85 hover:bg-white/[0.08] hover:border-emerald-400/30 transition-all"
+      >
+        <FaGithub className="h-[18px] w-[18px] text-white" />
+        <span>GitHub</span>
       </button>
     </div>
   );
@@ -110,10 +118,8 @@ function SignInForm({ formData, setFormData, onSubmit, loading, errors, showPw, 
           Sign in to your treasury dashboard.
         </p>
       </div>
-
       <SocialRow />
       <Divider />
-
       <Input
         data-testid="signin-email-input"
         icon={<Mail className="h-4 w-4" />}
@@ -124,7 +130,6 @@ function SignInForm({ formData, setFormData, onSubmit, loading, errors, showPw, 
         onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
         error={errors.email}
       />
-
       <Input
         data-testid="signin-password-input"
         icon={<Lock className="h-4 w-4" />}
@@ -145,7 +150,6 @@ function SignInForm({ formData, setFormData, onSubmit, loading, errors, showPw, 
           </button>
         }
       />
-
       <div className="flex items-center justify-between text-[12px]">
         <label className="flex items-center gap-2 text-white/60 cursor-pointer select-none" data-testid="remember-me-label">
           <input
@@ -167,7 +171,6 @@ function SignInForm({ formData, setFormData, onSubmit, loading, errors, showPw, 
           Forgot password?
         </button>
       </div>
-
       <button
         data-testid="signin-submit-btn"
         type="submit"
@@ -187,8 +190,6 @@ function SignInForm({ formData, setFormData, onSubmit, loading, errors, showPw, 
     </form>
   );
 }
-
-/* ---------- 3-step signup wizard ---------- */
 
 function LField({ label, required, error, children, hint }) {
   return (
@@ -303,7 +304,6 @@ const STEP_TITLES = ["Personal Information", "Contact & Address", "Security"];
 function SignUpForm({
   formData,
   setFormData,
-  onFinalSubmit,
   loading,
   errors,
   showPw,
@@ -332,7 +332,6 @@ function SignUpForm({
     if (step < totalSteps) {
       goNext();
     } else if (validateStep(step)) {
-      onFinalSubmit();
     }
   };
 
@@ -368,9 +367,7 @@ function SignUpForm({
           <span className="text-emerald-300/80">{STEP_TITLES[step - 1]}</span>
         </p>
       </div>
-
       <Stepper current={step} total={totalSteps} labels={["Personal", "Contact", "Security"]} />
-
       <AnimatePresence mode="wait" custom={direction} initial={false}>
         {step === 1 && (
           <motion.div
@@ -419,7 +416,6 @@ function SignUpForm({
             </LField>
           </motion.div>
         )}
-
         {step === 2 && (
           <motion.div
             key="step-2"
@@ -486,7 +482,6 @@ function SignUpForm({
                 />
               </div>
             </LField>
-
             <SectionHeader>Address</SectionHeader>
             <div className="grid grid-cols-2 gap-3">
               <LField label="City / Town" required error={errors.city}>
@@ -522,7 +517,6 @@ function SignUpForm({
             </LField>
           </motion.div>
         )}
-
         {step === 3 && (
           <motion.div
             key="step-3"
@@ -570,7 +564,6 @@ function SignUpForm({
               </LField>
             </div>
             <PasswordStrength password={formData.password} />
-
             <LField label="Referral Code" hint="(optional)" error={errors.referralCode}>
               <PInput
                 data-testid="signup-referral-input"
@@ -580,7 +573,6 @@ function SignUpForm({
                 onChange={update("referralCode")}
               />
             </LField>
-
             <div>
               <label
                 data-testid="signup-terms-label"
@@ -602,7 +594,7 @@ function SignUpForm({
                     Terms and Conditions
                   </span>{" "}
                   and{" "}
-                  <span className="text-emerald-300/90 hover:text-emerald-200">
+                  <span className="text-emerald-300/90 hover:text-emarthod:green-200">
                     Privacy Policy
                   </span>{" "}
                   of Netpay
@@ -615,7 +607,6 @@ function SignUpForm({
           </motion.div>
         )}
       </AnimatePresence>
-
       <div className="flex items-center gap-3 mt-1">
         {step > 1 && (
           <button
@@ -653,7 +644,7 @@ function SignUpForm({
   );
 }
 
-export default function AuthPanel({ mode, setMode, formData, setFormData }) {
+export default function AuthPanel({ mode, setMode, formData, setFormData, cardDetails, onSignIn, onSignUp, onAuthSuccess }) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [showPw, setShowPw] = useState(false);
@@ -665,8 +656,7 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
   const validateSignIn = () => {
     const e = {};
     if (!formData.email) e.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      e.email = "Invalid email format";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) e.email = "Invalid email format";
     if (!formData.password) e.password = "Password is required";
     else if (formData.password.length < 6) e.password = "At least 6 characters";
     setErrors(e);
@@ -679,8 +669,7 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
       if (!formData.firstName?.trim()) e.firstName = "Required";
       if (!formData.lastName?.trim()) e.lastName = "Required";
       if (!formData.email) e.email = "Email is required";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-        e.email = "Invalid email format";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) e.email = "Invalid email format";
     } else if (s === 2) {
       if (!formData.country) e.country = "Required";
       if (!formData.gender) e.gender = "Required";
@@ -693,10 +682,8 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
       if (!formData.password) e.password = "Password is required";
       else if (formData.password.length < 8) e.password = "Min. 8 characters";
       if (!formData.confirmPassword) e.confirmPassword = "Confirm your password";
-      else if (formData.confirmPassword !== formData.password)
-        e.confirmPassword = "Passwords do not match";
-      if (!formData.agreedToTerms)
-        e.agreedToTerms = "You must agree to continue";
+      else if (formData.confirmPassword !== formData.password) e.confirmPassword = "Passwords do not match";
+      if (!formData.agreedToTerms) e.agreedToTerms = "You must agree to continue";
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -705,21 +692,14 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
   const handleSignInSubmit = (ev) => {
     ev.preventDefault();
     if (!validateSignIn()) return;
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setToast("Welcome back — redirecting to your dashboard.");
-      setTimeout(() => setToast(null), 3500);
-    }, 1400);
+    // Call parent's sign-in handler (which handles auth and redirect)
+    if (onSignIn) onSignIn(ev);
   };
 
   const handleSignUpFinish = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setToast("Account created — check your inbox to verify.");
-      setTimeout(() => setToast(null), 3500);
-    }, 1400);
+    if (!validateStep(3)) return;
+    // Call parent's sign-up handler
+    if (onSignUp) onSignUp();
   };
 
   const switchMode = () => {
@@ -729,9 +709,21 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
     setMode((m) => (m === "signin" ? "signup" : "signin"));
   };
 
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        setLoading(false);
+        const msg = mode === "signin" ? "Welcome back — redirecting to your dashboard." : "Account created — check your inbox to verify.";
+        setToast(msg);
+        setTimeout(() => setToast(null), 3000);
+        if (onAuthSuccess) onAuthSuccess();
+      }, 1400);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, mode, onAuthSuccess]);
+
   return (
     <div className="relative w-full max-w-[460px]" ref={panelRef}>
-      {/* Outer emerald glow halo */}
       <div
         aria-hidden
         className="absolute -inset-6 rounded-[36px] pointer-events-none"
@@ -740,12 +732,10 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
             "radial-gradient(60% 60% at 50% 50%, rgba(16,185,129,0.18) 0%, transparent 70%)",
         }}
       />
-
       <div
         className="relative rounded-[28px] glass-strong p-7 md:p-9 overflow-hidden"
         data-testid="auth-panel-card"
       >
-        {/* Tab switcher */}
         <div
           className="relative grid grid-cols-2 p-1 rounded-xl bg-white/[0.03] border border-white/10 mb-7 text-[12px] font-medium"
           data-testid="auth-tabs"
@@ -774,8 +764,6 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
             Create account
           </button>
         </div>
-
-        {/* Animated form area */}
         <PartitionAnimator activeKey={mode}>
           {mode === "signin" ? (
             <SignInForm
@@ -793,7 +781,6 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
               key="signup"
               formData={formData}
               setFormData={setFormData}
-              onFinalSubmit={handleSignUpFinish}
               loading={loading}
               errors={errors}
               showPw={showPw}
@@ -806,8 +793,6 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
             />
           )}
         </PartitionAnimator>
-
-        {/* Subtle bottom helper */}
         <div className="mt-6 text-center text-[12px] text-white/40">
           {mode === "signin" ? "New to Netpay?" : "Already have an account?"}{" "}
           <button
@@ -819,8 +804,6 @@ export default function AuthPanel({ mode, setMode, formData, setFormData }) {
           </button>
         </div>
       </div>
-
-      {/* Toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
