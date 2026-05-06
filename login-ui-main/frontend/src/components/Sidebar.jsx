@@ -189,9 +189,9 @@ export default function Sidebar({ onClose }) {
     setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
-  const isPathActive = (path) => {
-    return location.pathname === path || location.pathname.startsWith(path + "/");
-  };
+   const isPathActive = (path) => {
+     return location.pathname === path;
+   };
 
   const currentSection = navSections[showUserPortal ? 0 : 1];
 
@@ -244,13 +244,13 @@ export default function Sidebar({ onClose }) {
                 <div key={item.label}>
                   <button
                     onClick={() => (collapsed ? handleNavClick(item.children[0].path) : toggleGroup(item.label))}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-all relative",
-                      collapsed ? "justify-center" : "justify-start",
-                      groupActive
-                        ? "text-emerald-400"
-                        : "text-white/60 hover:text-emerald-300 hover:bg-white/5"
-                    )}
+                     className={cn(
+                       "w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-all relative",
+                       collapsed ? "justify-center" : "justify-start",
+                       groupActive
+                         ? "text-emerald-400"
+                         : "text-white/60 hover:text-emerald-300 hover:bg-white/5"
+                     )}
                   >
                     <Icon className="h-5 w-5 shrink-0" />
                     {!collapsed && (

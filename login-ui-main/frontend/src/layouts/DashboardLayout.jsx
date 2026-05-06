@@ -79,7 +79,7 @@ export default function DashboardLayout() {
             <span className="font-display text-lg font-bold text-white">NetPay</span>
             <div className="w-10" />
           </div>
-          <div className="p-4 lg:p-6">
+          <div className="p-4 lg:p-6 lg:pl-8">
             <Suspense fallback={<DashboardSkeleton />}>
               <Routes>
                 <Route index element={<AdminPanelPage />} />
