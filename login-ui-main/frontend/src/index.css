@@ -7,8 +7,6 @@ body {
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: #020a07;
-    color: #ffffff;
     overflow-x: hidden;
 }
 
@@ -183,6 +181,30 @@ input:-webkit-autofill:focus {
 
 html { color-scheme: dark; }
 html[data-theme="light"] { color-scheme: light; }
+
+/* Light theme CSS variables */
+[data-theme="light"] {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 160 84% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 40% 85%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 160 30% 92%;
+    --muted-foreground: 160 10% 35%;
+    --accent: 160 84% 30%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 160 30% 80%;
+    --input: 160 30% 80%;
+    --ring: 160 84% 30%;
+    --radius: 0.75rem;
+}
 
 [data-theme="light"] body {
     background: #f4faf6;
