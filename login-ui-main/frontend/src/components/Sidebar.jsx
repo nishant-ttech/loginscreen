@@ -71,7 +71,7 @@ const navSections = [
     id: "admin",
     label: "Admin Portal",
     items: [
-      { icon: LayoutDashboard, label: "Admin Dashboard", path: "/dashboard" },
+      { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
       {
         icon: Users,
         label: "Management",
@@ -90,7 +90,7 @@ const navSections = [
         icon: Network,
         label: "Crypto",
         children: [
-          { label: "Crypto Dashboard", path: "/dashboard/crypto" },
+          { label: "Crypto", path: "/dashboard/crypto" },
           { label: "Hot Wallets", path: "/dashboard/crypto/hot-wallets" },
           { label: "Gas Treasury", path: "/dashboard/crypto/gas-treasury" },
           { label: "Crypto Deposits", path: "/dashboard/crypto/deposits" },
@@ -137,8 +137,7 @@ const iconMap = {
   Settings: Settings,
 };
 
-export default function Sidebar({ onClose }) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function Sidebar({ onClose, collapsed = false, onToggleCollapsed, sidebarOpen = true }) {
   const [theme, setTheme] = useState("dark");
   const [openGroups, setOpenGroups] = useState({ Wallet: true, Cards: true });
   const [showUserPortal, setShowUserPortal] = useState(false);
@@ -199,7 +198,8 @@ export default function Sidebar({ onClose }) {
     <aside
       className={cn(
         "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-white/10 glass-strong transition-all duration-300 h-screen",
-        collapsed ? "w-[72px]" : "w-[260px] lg:w-[280px]"
+        collapsed ? "w-[72px]" : "w-[260px] lg:w-[280px]",
+        sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}
     >
       <div className="flex items-center justify-between p-4 border-b border-white/10 shrink-0">
@@ -220,7 +220,7 @@ export default function Sidebar({ onClose }) {
           </div>
         )}
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => onToggleCollapsed && onToggleCollapsed()}
           className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-white/60 hover:text-white"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >

@@ -4,6 +4,7 @@ import { X, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import LoadingScreen from "@/components/LoadingScreen";
 import DashboardSkeleton from "@/components/DashboardSkeleton";
+import { cn } from "@/lib/utils";
 
 // Lazy-loaded page components
 const OverviewPage = React.lazy(() => import("@/pages/OverviewPage"));
@@ -37,6 +38,7 @@ const AUTH_KEY = "netpay-auth";
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
+  const [collapsed, setCollapsed] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
@@ -62,8 +64,18 @@ export default function DashboardLayout() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="flex">
-        <Sidebar onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 ml-0 lg:ml-[260px] transition-all duration-300 min-w-0">
+        <Sidebar
+          onClose={() => setSidebarOpen(false)}
+          collapsed={collapsed}
+          onToggleCollapsed={() => setCollapsed((c) => !c)}
+          sidebarOpen={sidebarOpen}
+        />
+        <main
+          className={cn(
+            "flex-1 transition-all duration-300 min-w-0 ml-0",
+            collapsed ? "lg:ml-[72px]" : "lg:ml-[280px]"
+          )}
+        >
           <div className="lg:hidden flex items-center justify-between p-4 border-b border-white/10 glass-strong">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
