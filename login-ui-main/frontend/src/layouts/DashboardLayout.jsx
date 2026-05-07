@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import LoadingScreen from "@/components/LoadingScreen";
 import DashboardSkeleton from "@/components/DashboardSkeleton";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
 
 // Lazy-loaded page components
 const OverviewPage = React.lazy(() => import("@/pages/OverviewPage"));
@@ -19,6 +20,7 @@ const CommissionSettingsPage = React.lazy(() => import("@/pages/CommissionSettin
 const SecurityPage = React.lazy(() => import("@/pages/SecurityPage"));
 const ServerIPPage = React.lazy(() => import("@/pages/ServerIPPage"));
 const CardholdersPage = React.lazy(() => import("@/pages/CardholdersPage"));
+const CardholderDetailsPage = React.lazy(() => import("@/pages/dashboard/cardholder-details/Overview"));
 const PhysicalCardsPage = React.lazy(() => import("@/pages/PhysicalCardsPage"));
 const AdminPanelPage = React.lazy(() => import("@/pages/AdminPanelPage"));
 const KycPage = React.lazy(() => import("@/pages/KycPage"));
@@ -92,6 +94,7 @@ export default function DashboardLayout() {
             <div className="w-10" />
           </div>
           <div className="p-4 lg:p-6 lg:pl-8">
+            <Toaster />
             <Suspense fallback={<DashboardSkeleton />}>
               <Routes>
                 <Route index element={<AdminPanelPage />} />
@@ -119,6 +122,8 @@ export default function DashboardLayout() {
                 <Route path="withdrawals" element={<WithdrawalsPage />} />
                 <Route path="transactions" element={<TransactionsPage />} />
                 <Route path="cardholders" element={<CardholdersPage />} />
+                <Route path="cardholders/:id" element={<CardholdersPage />} />
+                <Route path="cardholder-details" element={<CardholderDetailsPage />} />
                 <Route path="cards-list" element={<CardholdersPage />} />
                 <Route path="physical-cards" element={<PhysicalCardsPage />} />
 
