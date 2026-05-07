@@ -20,7 +20,7 @@ import {
   CreditCard,
   Shield,
 } from "lucide-react";
-import { DUMMY_CARDS, CardVisual } from "./CardsPage";
+import cardholdersService from "@/services/cardholdersService";
 
 const CARD_TX = [
   { id: "ctx-1", date: "2026-05-05 18:42", merchant: "Amazon Web Services", amount: -42.18, status: "completed", ref: "AUTH-901223" },
@@ -30,17 +30,107 @@ const CARD_TX = [
   { id: "ctx-5", date: "2026-04-29 17:55", merchant: "Apple", amount: -1.99, status: "declined", ref: "AUTH-861455" },
 ];
 
+const CardVisual = ({ card, compact = false }) => {
+  const brandColors = {
+    "VISA": "from-emerald-600 to-emerald-900",
+    "MASTERCARD": "from-slate-700 to-slate-900",
+    "AMEX": "from-blue-700 to-indigo-900",
+    "DISCOVER": "from-amber-700 to-orange-900",
+  };
+  return (
+    <div
+      className={`relative rounded-2xl p-5 overflow-hidden bg-gradient-to-br ${brandColors[card.brand] || brandColors["VISA"]} text-white aspect-[1.586/1] ${compact ? "" : "min-h-[200px]"}`}
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_60%)]" />
+      <div className="relative h-full flex flex-col justify-between">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.2em] opacity-70">
+              {card.type?.toLowerCase() === "virtual" ? "Virtual Card" : "Physical Card"}
+            </div>
+            <div className="font-display text-lg mt-1">NetPay</div>
+          </div>
+          <CreditCard className="h-4 w-4 rotate-90 opacity-80" />
+        </div>
+        <div>
+          <div className="text-base sm:text-lg font-mono tracking-[0.18em] mb-3">
+            •••• •••• •••• {card.last4 || "0000"}
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-[9px] uppercase opacity-60">Card holder</div>
+              <div className="text-xs font-medium">{card.holder || "N/A"}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[9px] uppercase opacity-60">Expires</div>
+              <div className="text-xs font-medium font-mono">{card.expiry || "—"}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[9px] uppercase opacity-60">Brand</div>
+              <div className="text-xs font-bold tracking-wider">{card.brand || "—"}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function CardDetailsPage() {
   const { id } = useParams();
-  const card = DUMMY_CARDS.find((c) => c.id === id);
+  const [card, setCard] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [revealed, setRevealed] = useState(false);
   const [revealCountdown, setRevealCountdown] = useState(30);
   const [topupAmount, setTopupAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [status, setStatus] = useState(card?.status || "active");
+  const [status, setStatus] = useState("active");
   const [copied, setCopied] = useState(null);
   const [tab, setTab] = useState("transactions");
+
+  useEffect(() => {
+    const fetchCard = async () => {
+      setLoading(true);
+      try {
+        // Try to fetch from API first
+        const data = await cardholdersService.getCardholder(id);
+        setCard(data);
+        setStatus(data.status || "active");
+      } catch (err) {
+        // If API fails, try to get from cardholders list or use mock fallback
+        try {
+          const list = await cardholdersService.getCardholders();
+          const cardholders = list.data || list || [];
+          const found = cardholders.find((c) => c.id === id || c.holderId === id);
+          if (found) {
+            setCard({
+              id: found.id,
+              last4: found.cardLast4 || Math.floor(1000 + Math.random() * 9000).toString(),
+              brand: found.cardType || "VISA",
+              holder: found.name || "Unknown",
+              expiry: found.expiry || "12/29",
+              type: found.holderType?.toLowerCase() === "virtual" ? "virtual" : "physical",
+              status: found.status || "active",
+              balance: found.balance || 0,
+            });
+            setStatus(found.status || "active");
+          } else {
+            setError("Card not found");
+          }
+        } catch (e) {
+          setError("Failed to load card data");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchCard();
+    }
+  }, [id]);
 
   useEffect(() => {
     if (!revealed) return;
@@ -53,9 +143,29 @@ export default function CardDetailsPage() {
     return () => clearTimeout(t);
   }, [revealed, revealCountdown]);
 
-  if (!card) return <Navigate to="/cards" replace />;
+  if (loading) {
+    return (
+      <div className="space-y-6 p-6">
+        <div className="flex items-center gap-4">
+          <Link to="/cards">
+            <Button variant="ghost" size="sm" className="text-white/60">
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back to cards
+            </Button>
+          </Link>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <div className="flex flex-col items-center gap-3">
+            <RefreshCw className="h-8 w-8 text-white/40 animate-spin" />
+            <span className="text-white/40">Loading card details...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const fullPan = `4821 0291 8847 ${card.last4}`;
+  if (error || !card) return <Navigate to="/cards" replace />;
+
+  const fullPan = `•••• •••• •••• ${card.last4}`;
   const cvv = "738";
   const expiry = card.expiry;
 
@@ -70,13 +180,6 @@ export default function CardDetailsPage() {
     } catch {}
   };
 
-  const txStatusColor = (s) =>
-    s === "completed"
-      ? "bg-emerald-500/20 text-emerald-400"
-      : s === "pending"
-      ? "bg-amber-500/20 text-amber-400"
-      : "bg-red-500/20 text-red-400";
-
   const onFreeze = () => setStatus(status === "frozen" ? "active" : "frozen");
   const onTerminate = () => {
     if (window.confirm("Terminate this card? This action cannot be undone.")) {
@@ -88,8 +191,15 @@ export default function CardDetailsPage() {
   const isFrozen = status === "frozen";
   const isCancelled = status === "cancelled";
 
+  const txStatusColor = (s) =>
+    s === "completed"
+      ? "bg-emerald-500/20 text-emerald-400"
+      : s === "pending"
+      ? "bg-amber-500/20 text-amber-400"
+      : "bg-red-500/20 text-red-400";
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center gap-4">
         <Link to="/cards">
           <Button variant="ghost" size="sm" className="text-white/60">
@@ -127,7 +237,7 @@ export default function CardDetailsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-white/50">Issued</span>
-                <span className="text-white">{card.issued}</span>
+                <span className="text-white">{card.created || card.issued || "—"}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-white/50">Expires</span>
@@ -167,7 +277,7 @@ export default function CardDetailsPage() {
                     </button>
                   </div>
                   <div className="space-y-2">
-                    {[
+                    {[ 
                       { k: "pan", label: "Card number", val: fullPan },
                       { k: "exp", label: "Expiry", val: expiry },
                       { k: "cvv", label: "CVV", val: cvv },
@@ -214,7 +324,6 @@ export default function CardDetailsPage() {
             </CardContent>
           </Card>
 
-          {/* Action buttons */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <Button
               onClick={onFreeze}

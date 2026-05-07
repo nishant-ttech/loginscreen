@@ -20,8 +20,12 @@ const CommissionSettingsPage = React.lazy(() => import("@/pages/CommissionSettin
 const SecurityPage = React.lazy(() => import("@/pages/SecurityPage"));
 const ServerIPPage = React.lazy(() => import("@/pages/ServerIPPage"));
 const CardholdersPage = React.lazy(() => import("@/pages/CardholdersPage"));
-const CardholderDetailsPage = React.lazy(() => import("@/pages/dashboard/cardholder-details/Overview"));
 const PhysicalCardsPage = React.lazy(() => import("@/pages/PhysicalCardsPage"));
+const CardsPage = React.lazy(() => import("@/pages/CardsPage"));
+const CardDetailsPage = React.lazy(() => import("@/pages/CardDetailsPage"));
+const CardholderDetailsPage = React.lazy(() => import("@/pages/dashboard/cardholder-details/Overview"));
+const ProfilePage = React.lazy(() => import("@/pages/ProfilePage"));
+const ChangePasswordPage = React.lazy(() => import("@/pages/ChangePasswordPage"));
 const AdminPanelPage = React.lazy(() => import("@/pages/AdminPanelPage"));
 const KycPage = React.lazy(() => import("@/pages/KycPage"));
 const WalletPage = React.lazy(() => import("@/pages/WalletPage"));
@@ -30,11 +34,7 @@ const WalletDepositChainPage = React.lazy(() => import("@/pages/WalletDepositCha
 const WalletWithdrawPage = React.lazy(() => import("@/pages/WalletWithdrawPage"));
 const WalletHistoryPage = React.lazy(() => import("@/pages/WalletHistoryPage"));
 const WalletImportPage = React.lazy(() => import("@/pages/WalletImportPage"));
-const CardsPage = React.lazy(() => import("@/pages/CardsPage"));
 const ApplyCardPage = React.lazy(() => import("@/pages/ApplyCardPage"));
-const CardDetailsPage = React.lazy(() => import("@/pages/CardDetailsPage"));
-const ProfilePage = React.lazy(() => import("@/pages/ProfilePage"));
-const ChangePasswordPage = React.lazy(() => import("@/pages/ChangePasswordPage"));
 
 const AUTH_KEY = "netpay-auth";
 
@@ -124,8 +124,8 @@ export default function DashboardLayout() {
                 <Route path="cardholders" element={<CardholdersPage />} />
                 <Route path="cardholders/:id" element={<CardholdersPage />} />
                 <Route path="cardholder-details" element={<CardholderDetailsPage />} />
-                <Route path="cards-list" element={<CardholdersPage />} />
-                <Route path="physical-cards" element={<PhysicalCardsPage />} />
+                 <Route path="cards-list" element={<CardsPage />} />
+                 <Route path="physical-cards" element={<PhysicalCardsPage />} />
 
                 {/* Crypto */}
                 <Route path="crypto" element={<CryptoPage />} />
