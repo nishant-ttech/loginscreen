@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, AlertTriangle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export const CHAINS = [
   {
@@ -145,24 +146,29 @@ export default function WalletDepositPage() {
           >
             <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full bg-white/5" />
             <div className="relative">
-              <div className="flex items-center justify-between mb-3">
-                <div
-                  className={`h-12 w-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center ${chain.accent} font-bold text-lg`}
-                >
-                  {chain.token.slice(0, 1)}
-                </div>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    chain.enabled
-                      ? "bg-emerald-500/20 text-emerald-400"
-                      : "bg-white/10 text-white/40"
-                  }`}
-                >
-                  {chain.enabled ? "Enabled" : "Soon"}
-                </span>
-              </div>
-              <div className={`font-bold text-xl ${chain.accent}`}>{chain.name}</div>
-              <div className="text-white/60 text-sm mt-0.5">{chain.network}</div>
+               <div className="flex items-center justify-between mb-3">
+                 <div
+                   className={`h-12 w-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center ${chain.accent} font-bold text-lg`}
+                 >
+                   {chain.token.slice(0, 1)}
+                 </div>
+                 <span
+                   className={`text-xs px-2 py-1 rounded-full ${
+                     chain.enabled
+                       ? "bg-emerald-500/20 text-emerald-400"
+                       : "bg-white/10 text-white/40"
+                   }`}
+                 >
+                   {chain.enabled ? "Enabled" : "Soon"}
+                 </span>
+               </div>
+               <div className="flex items-center gap-2 mt-2">
+                 <div className={`font-bold text-xl ${chain.accent}`}>{chain.name}</div>
+                 <Badge variant="secondary" className="text-xs text-white/80 bg-white/20">
+                   USDT
+                 </Badge>
+               </div>
+               <div className="text-white/60 text-sm mt-0.5">{chain.network}</div>
               <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
                 <div>
                   <div className="text-white/40">Confirms</div>

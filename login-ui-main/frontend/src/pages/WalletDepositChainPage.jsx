@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
   Copy,
@@ -146,24 +147,29 @@ export default function WalletDepositChainPage() {
                 </Button>
               </div>
             </div>
-            <div className="text-xs text-white/50 grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
-              <div>
-                <div className="text-white/40">Network</div>
-                <div className="text-white/80 mt-0.5">{chain.network}</div>
-              </div>
-              <div>
-                <div className="text-white/40">Token</div>
-                <div className="text-white/80 mt-0.5">USDT ({chain.token})</div>
-              </div>
-              <div>
-                <div className="text-white/40">Confirmations</div>
-                <div className="text-white/80 mt-0.5">{chain.confirmations}</div>
-              </div>
-              <div>
-                <div className="text-white/40">Deposit fee</div>
-                <div className="text-white/80 mt-0.5">{chain.fee}</div>
-              </div>
-            </div>
+             <div className="text-xs text-white/50 grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
+               <div>
+                 <div className="text-white/40">Network</div>
+                 <div className="text-white/80 mt-0.5">{chain.network}</div>
+               </div>
+               <div>
+                 <div className="text-white/40">Token</div>
+                 <div className="flex items-center gap-2 text-white/80 mt-0.5">
+                   <span>USDT ({chain.token})</span>
+                   <Badge variant="secondary" className="text-xs">
+                     USDT
+                   </Badge>
+                 </div>
+               </div>
+               <div>
+                 <div className="text-white/40">Confirmations</div>
+                 <div className="text-white/80 mt-0.5">{chain.confirmations}</div>
+               </div>
+               <div>
+                 <div className="text-white/40">Deposit fee</div>
+                 <div className="text-white/80 mt-0.5">{chain.fee}</div>
+               </div>
+             </div>
           </CardContent>
         </Card>
 
